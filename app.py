@@ -24,8 +24,6 @@ class VideoProcessor(VideoProcessorBase):
     def recv(self, frame):
         # img = frame.to_ndarray(format="bgr24")
         img = frame.to_image()
-        if self.style == style_list[1]:
-            img = img.convert("L")
 
         # return av.VideoFrame.from_ndarray(img, format="bgr24")
         return av.VideoFrame.from_image(img)
