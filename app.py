@@ -24,7 +24,6 @@ class VideoProcessor(VideoProcessorBase):
                 self.style = new_style
 
     def recv(self, frame):
-        img = frame.to_ndarray(format="bgr24")
         faceCascade = cv2.CascadeClassifier('harcascade_frontalface_default.xml')
         result = DeepFace.analyze(frame,actions= ['dominant_emotion'])
         
