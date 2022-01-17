@@ -22,8 +22,7 @@ class VideoProcessor(VideoProcessorBase):
                 self.style = new_style
 
     def recv(self, frame):
-        # img = frame.to_ndarray(format="bgr24")
-        img = frame.to_image()
+        img = frame.to_ndarray(format="bgr24")
 
         # return av.VideoFrame.from_ndarray(img, format="bgr24")
         return av.VideoFrame.from_image(img)
