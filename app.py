@@ -25,7 +25,7 @@ class VideoProcessor(VideoProcessorBase):
 
     def recv(self, frame):
         faceCascade = cv2.CascadeClassifier('harcascade_frontalface_default.xml')
-        result = DeepFace.analyze(frame,actions= ['dominant_emotion'])
+        result = DeepFace.analyze(frame,actions= ['emotion'])
         
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         faces = faceCascade.detectMultiScale(gray,1.1,4)
