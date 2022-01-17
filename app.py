@@ -11,4 +11,4 @@ while run:
   ret, frame = cam.read()
   FRAME_WINDOW.image(frame)
 else:
-  st.write('stopped)
+  st.write('stopped')
