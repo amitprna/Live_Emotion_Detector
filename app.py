@@ -23,7 +23,7 @@ class VideoProcessor(VideoProcessorBase):
 
     def recv(self, frame):
         img = frame.to_ndarray(format="bgr24")
-
+        # image processing code here
         # return av.VideoFrame.from_ndarray(img, format="bgr24")
         return av.VideoFrame.from_image(img)
 
@@ -36,6 +36,3 @@ ctx = webrtc_streamer(
             "audio": False
         }
     )
-
-if ctx.video_processor:
-    ctx.video_transformer.update_style(style_selection)
