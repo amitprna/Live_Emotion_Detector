@@ -23,21 +23,20 @@ class VideoProcessor(VideoProcessorBase):
             with self.model_lock:
                 self.style = new_style
 
-    def recv(self, frame):
+    def recv(self, frame: av.VideoFrame) -> av.VideoFrame:
+        image = frame.to_ndarray(format="bgr24")
         faceCascade = cv2.CascadeClassifier('harcascade_frontalface_default.xml')
-        result = DeepFace.analyze(frame,actions= ['emotion'])
+        result = DeepFace.analyze(image,actions= ['emotion'])
         
-        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         faces = faceCascade.detectMultiScale(gray,1.1,4)
 
         for (x,y,w,h) in faces:
-            cv2.rectangle(frame,(x,y),(x+w, y+h),(0,255,0), 2)
+            cv2.rectangle(image,(x,y),(x+w, y+h),(0,255,0), 2)
         
         font = cv2.FONT_HERSHEY_SIMPLEX
     
-        cv2.putText(frame,result['dominant_emotion'],(50,50),font, 3,(255,255,128),2,cv2.LINE_4);
-    
-        cv2.imshow('Video',frame)   
+        cv2.putText(imafe,result['dominant_emotion'],(50,50),font, 3,(255,255,128),2,cv2.LINE_4); 
         
     
 #         if cv2.waitkey(2) & 0xFF == ord('q'):
@@ -45,7 +44,7 @@ class VideoProcessor(VideoProcessorBase):
         
 #         cap.release()
 #         cv2.destroyAllWindows()
-        return av.VideoFrame.from_ndarray(img, format="bgr24")
+        return av.VideoFrame.from_ndarray(annotated_image, format="bgr24")
 
 ctx = webrtc_streamer(
         key="example",
