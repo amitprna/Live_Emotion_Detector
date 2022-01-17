@@ -46,8 +46,7 @@ class VideoProcessor(VideoProcessorBase):
         
 #         cap.release()
 #         cv2.destroyAllWindows()
-        # return av.VideoFrame.from_ndarray(img, format="bgr24")
-        return av.VideoFrame.from_image(img)
+        return av.VideoFrame.from_ndarray(img, format="bgr24")
 
 ctx = webrtc_streamer(
         key="example",
