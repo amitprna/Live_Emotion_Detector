@@ -25,29 +25,21 @@ class VideoProcessor(VideoProcessorBase):
 
     def recv(self, frame):
         img = frame.to_ndarray(format="bgr24")
-#         faceCascade = cv2.CascadeClassifier('harcascade_frontalface_default.xml')
-#         result = DeepFace.analyze(frame,actions= ['dominant_emotion'])
-    
-#         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-#         faces = faceCascade.detectMultiScale(gray,1.1,4)
-
-#         for (x,y,w,h) in faces:
-#             cv2.rectangle(frame,(x,y),(x+w, y+h),(0,255,0), 2)
+        faceCascade = cv2.CascadeClassifier('harcascade_frontalface_default.xml')
+        result = DeepFace.analyze(frame,actions= ['dominant_emotion'])
         
-#         font = cv2.FONT_HERSHEY_SIMPLEX
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        faces = faceCascade.detectMultiScale(gray,1.1,4)
+
+        for (x,y,w,h) in faces:
+            cv2.rectangle(frame,(x,y),(x+w, y+h),(0,255,0), 2)
+        
+        font = cv2.FONT_HERSHEY_SIMPLEX
     
-#         cv2.putText(
-#         frame,
-#         result['dominant_emotion'],
-#         (50,50),
-#         font, 3,
-#         (255,255,128),
-#         2,
-#         cv2.LINE_4
-#         );
+        cv2.putText(frame,result['dominant_emotion'],(50,50),font, 3,(255,255,128),2,cv2.LINE_4);
     
 
-#         cv2.imshow('Video',frame)
+        cv2.imshow('Video',frame)
     
 #         if cv2.waitkey(2) & 0xFF == ord('q'):
 #             break
