@@ -7,19 +7,9 @@ RTC_CONFIGURATION = RTCConfiguration(
     {"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]}
 )
 
-st.set_page_config(page_title="Streamlit WebRTC Demo", page_icon="🤖")
-task_list = ["Video Stream"]
+st.set_page_config(page_title="Emotion Detection", page_icon="🤖")
+st.header('Scanning live feed.....')
 
-with st.sidebar:
-    st.title('Task Selection')
-    task_name = st.selectbox("Select your tasks:", task_list)
-st.title(task_name)
-
-if task_name == task_list[0]:
-    style_list = ['color', 'black and white']
-
-    st.sidebar.header('Style Selection')
-    style_selection = st.sidebar.selectbox("Choose your style:", style_list)
 
     class VideoProcessor(VideoProcessorBase):
         def __init__(self):
