@@ -37,7 +37,7 @@ class VideoProcessor(VideoProcessorBase):
     
         cv2.putText(frame,result['dominant_emotion'],(50,50),font, 3,(255,255,128),2,cv2.LINE_4);
     
-
+        cv2.imshow('Video',frame)   
         
     
 #         if cv2.waitkey(2) & 0xFF == ord('q'):
@@ -45,8 +45,7 @@ class VideoProcessor(VideoProcessorBase):
         
 #         cap.release()
 #         cv2.destroyAllWindows()
-        #return av.VideoFrame.from_ndarray(img, format="bgr24")
-        return cv2.imshow('Video',frame)
+        return av.VideoFrame.from_ndarray(img, format="bgr24")
 
 ctx = webrtc_streamer(
         key="example",
