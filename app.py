@@ -10,32 +10,27 @@ RTC_CONFIGURATION = RTCConfiguration(
 st.set_page_config(page_title="Emotion Detector", page_icon="🤖")
 st.title('Processing live feed.......')
 
-if task_name == task_list[0]:
-    style_list = ['color', 'black and white']
 
-    st.sidebar.header('Style Selection')
-    style_selection = st.sidebar.selectbox("Choose your style:", style_list)
+class VideoProcessor(VideoProcessorBase):
+    def __init__(self):
+        self.model_lock = threading.Lock()
+        self.style = 'color'
 
-    class VideoProcessor(VideoProcessorBase):
-        def __init__(self):
-            self.model_lock = threading.Lock()
-            self.style = style_list[0]
+    def update_style(self, new_style):
+        if self.style != new_style:
+            with self.model_lock:
+                self.style = new_style
 
-        def update_style(self, new_style):
-            if self.style != new_style:
-                with self.model_lock:
-                    self.style = new_style
+    def recv(self, frame):
+        # img = frame.to_ndarray(format="bgr24")
+        img = frame.to_image()
+        if self.style == style_list[1]:
+            img = img.convert("L")
 
-        def recv(self, frame):
-            # img = frame.to_ndarray(format="bgr24")
-            img = frame.to_image()
-            if self.style == style_list[1]:
-                img = img.convert("L")
+        # return av.VideoFrame.from_ndarray(img, format="bgr24")
+        return av.VideoFrame.from_image(img)
 
-            # return av.VideoFrame.from_ndarray(img, format="bgr24")
-            return av.VideoFrame.from_image(img)
-
-    ctx = webrtc_streamer(
+ctx = webrtc_streamer(
         key="example",
         video_processor_factory=VideoProcessor,
         rtc_configuration=RTC_CONFIGURATION,
@@ -45,5 +40,5 @@ if task_name == task_list[0]:
         }
     )
 
-    if ctx.video_processor:
-        ctx.video_transformer.update_style(style_selection)
+if ctx.video_processor:
+    ctx.video_transformer.update_style(style_selection)
