@@ -1,57 +1,25 @@
-import streamlit as st
-from streamlit_webrtc import webrtc_streamer, VideoProcessorBase, RTCConfiguration
-import av
-import threading
 import cv2
 from deepface import DeepFace
+import streamlit as st
 
-RTC_CONFIGURATION = RTCConfiguration(
-    {"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]}
-)
+inp_image = st.camera_input('say cheese.......')
 
-st.set_page_config(page_title="Emotion Detector", page_icon="🤖")
-st.title('Processing live feed.......')
+if inp_image:
+    st.image(inp_image)
+    predictions = DeepFace.analyze(inp_image)
+    faceCascade = cv2.CascadeClassifier('harcascade_frontalface_default.xml')
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    faces = faceCascade.detectMultiScale(gray,1.1,4)
 
-
-class VideoProcessor(VideoProcessorBase):
-    def __init__(self):
-        self.model_lock = threading.Lock()
-        self.style = 'color'
-
-    def update_style(self, new_style):
-        if self.style != new_style:
-            with self.model_lock:
-                self.style = new_style
-
-    def recv(self, frame: av.VideoFrame) -> av.VideoFrame:
-        image = frame.to_ndarray(format="bgr24")
-        faceCascade = cv2.CascadeClassifier('harcascade_frontalface_default.xml')
-        result = DeepFace.analyze(image,actions= ['emotion'])
-        
-        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-        faces = faceCascade.detectMultiScale(gray,1.1,4)
-
-        for (x,y,w,h) in faces:
-            cv2.rectangle(image,(x,y),(x+w, y+h),(0,255,0), 2)
-        
-        font = cv2.FONT_HERSHEY_SIMPLEX
+    for (x,y,w,h) in faces:
+        cv2.rectangle(img,(x,y),(x+w, y+h),(0,255,0), 2)
+    font = cv2.FONT_HERSHEY_SIMPLEX 
+    cv2.putText( img, predictions['dominant_emotion'], (0,50), font, 1, (255,255,128), 2, cv2.LINE_4 ); 
+    cv2.putText( img, str(predictions['age']), (10,50), font, 1, (255,255,128), 2, cv2.LINE_AA ); 
+    cv2.putText( img, predictions['gender'], (20,50), font, 1, (255,255,128), 2, cv2.LINE_4 );
+    st.image(inp_image)
+else:
+    st.write('No image for processing')
+ 
     
-        cv2.putText(imafe,result['dominant_emotion'],(50,50),font, 3,(255,255,128),2,cv2.LINE_4); 
-        
-    
-#         if cv2.waitkey(2) & 0xFF == ord('q'):
-#             break
-        
-#         cap.release()
-#         cv2.destroyAllWindows()
-        return av.VideoFrame.from_ndarray(annotated_image, format="bgr24")
 
-ctx = webrtc_streamer(
-        key="example",
-        video_processor_factory=VideoProcessor,
-        rtc_configuration=RTC_CONFIGURATION,
-        media_stream_constraints={
-            "video": True,
-            "audio": False
-        }
-    )
