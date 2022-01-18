@@ -9,9 +9,8 @@ RTC_CONFIGURATION = RTCConfiguration(
 )
 
 class VideoTransformer(VideoProcessorBase):
-    def transform(self, frame):
+    def recv(self, frame: av.VideoFrame) -> av.VideoFrame:
         img = frame.to_ndarray(format="bgr24")
-        
         predictions = DeepFace.analyze(img)
         faceCascade = cv2.CascadeClassifier('harcascade_frontalface_default.xml')
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -24,7 +23,7 @@ class VideoTransformer(VideoProcessorBase):
         cv2.putText( img, str(predictions['age']), (10,50), font, 1, (255,255,128), 2, cv2.LINE_AA ); 
         cv2.putText( img, predictions['gender'], (20,50), font, 1, (255,255,128), 2, cv2.LINE_4 );
         
-        return img
+        return av.VideoFrame.from_ndarray(img, format="bgr24")
 
 
 webrtc_streamer(key="example",rtc_configuration=RTC_CONFIGURATION, video_transformer_factory=VideoTransformer)
