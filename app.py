@@ -12,7 +12,7 @@ class VideoTransformer(VideoTransformerBase):
     def transform(self, frame):
         img = frame.to_ndarray(format="bgr24")
         
-        predictions = DeepFace.analyze(inp_image)
+        predictions = DeepFace.analyze(img)
         faceCascade = cv2.CascadeClassifier('harcascade_frontalface_default.xml')
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         faces = faceCascade.detectMultiScale(gray,1.1,4)
