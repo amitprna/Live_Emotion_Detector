@@ -10,9 +10,11 @@ RTC_CONFIGURATION = RTCConfiguration(
 )
 
 class VideoTransformer(VideoProcessorBase):
+    result_queue: "queue.Queue[List[Detection]]"
     def recv(self, frame: av.VideoFrame) -> av.VideoFrame:
         img = frame.to_ndarray(format="bgr24")
         predictions = DeepFace.analyze(img)
+        result = [*predictions]
         faceCascade = cv2.CascadeClassifier('harcascade_frontalface_default.xml')
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         faces = faceCascade.detectMultiScale(gray,1.1,4)
@@ -24,10 +26,24 @@ class VideoTransformer(VideoProcessorBase):
         cv2.putText( img, str(predictions['age']), (10,50), font, 1, (255,255,128), 2, cv2.LINE_AA ); 
         cv2.putText( img, predictions['gender'], (20,50), font, 1, (255,255,128), 2, cv2.LINE_4 );
         
+        self.result_queue.put(result)
         return av.VideoFrame.from_ndarray(img, format="bgr24")
 
 
 webrtc_streamer(key="example",mode=WebRtcMode.SENDRECV,rtc_configuration=RTC_CONFIGURATION, video_processor_factory=VideoTransformer,media_stream_constraints={"video": True, "audio": False},async_processing=True)
- 
-    
+
+if st.checkbox("Show the detected labels", value=True):
+    if webrtc_ctx.state.playing:
+        labels_placeholder = st.empty()
+        while True:
+            if webrtc_ctx.video_processor:
+                try:
+                    result = webrtc_ctx.video_processor.result_queue.get(
+                        timeout=1.0
+                    )
+                except queue.Empty:
+                    result = None
+                labels_placeholder.table(result)
+            else:
+                break
 
