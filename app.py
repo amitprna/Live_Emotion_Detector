@@ -27,7 +27,7 @@ class VideoTransformer(VideoProcessorBase):
         return av.VideoFrame.from_ndarray(img, format="bgr24")
 
 
-webrtc_streamer(key="example",rtc_configuration=RTC_CONFIGURATION, video_transformer_factory=VideoTransformer)
+webrtc_streamer(key="example",rtc_configuration=RTC_CONFIGURATION, video_processor_factory=VideoTransformer)
  
     
 
