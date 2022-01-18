@@ -1,7 +1,7 @@
 import cv2
 from deepface import DeepFace
 import streamlit as st
-from streamlit_webrtc import VideoTransformerBase, webrtc_streamer
+from streamlit_webrtc import VideoTransformerBase, webrtc_streamer,RTCConfiguration
 
 #inp_image = st.camera_input('say cheese.......')
 RTC_CONFIGURATION = RTCConfiguration(
