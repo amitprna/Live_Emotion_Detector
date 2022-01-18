@@ -41,7 +41,8 @@ if st.checkbox("Show the detected labels", value=True):
                     result = webrtc_ctx.video_processor.result_queue.get(
                         timeout=1.0
                     )
-                except queue.Empty:
+                except:
+                    queue.Empty
                     result = None
                 labels_placeholder.table(result)
             else:
